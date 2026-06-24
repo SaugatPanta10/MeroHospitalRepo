@@ -15,8 +15,16 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+from django.views.generic import TemplateView
+from accounts.views import DynamicRoleLoginView
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('admin/', admin.site.split_path if hasattr(admin, 'split_path') else admin.site.urls),
+    
+    # 1. Global Public Home Page
+    path('', TemplateView.as_view(template_name='home_page.html'), name='home_page'),
+    
+    # 2. Universal Authorized Login Portal View
+    path('login/', DynamicRoleLoginView.as_view(), name='login'),
 ]
